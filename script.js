@@ -29,14 +29,16 @@ function changeCustomSkin() {
 
 setInterval(function() {
   if (!document.getElementById("customSkinBtn")) {
-    var newNode = document.createElement("button");
-    newNode.type = "button";
-    newNode.id = "customSkinBtn";
-    newNode.classList.add("chakra-button");
-    newNode.classList.add("css-32lhf4");
-    newNode.innerHTML = "<p class='chakra-text css-x8h6hl'>Edit Custom Skin</p>";
-    newNode.onclick=function() { changeCustomSkin(); };
-    document.getElementsByClassName("css-1q5zbtn")[0].appendChild(newNode);
+    try {
+        var newNode = document.createElement("button");
+        newNode.type = "button";
+        newNode.id = "customSkinBtn";
+        newNode.classList.add("chakra-button");
+        newNode.classList.add("css-32lhf4");
+        newNode.innerHTML = "<p class='chakra-text css-x8h6hl'>Edit Custom Skin</p>";
+        newNode.onclick=function() { changeCustomSkin(); };
+        document.getElementsByClassName("css-1q5zbtn")[0].appendChild(newNode);
+    } catch (e) {}
   }
 }, 1000);
 
