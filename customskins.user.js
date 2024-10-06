@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Miniblox Custom Skin
 // @namespace    Loqle
-// @version      1.1
+// @version      1.3
 // @description  Miniblox Custom Skins by Loqle
 // @author       Loqle
 // @match        https://miniblox.io/*
@@ -11,6 +11,7 @@
 // @grant        GM_getValue
 // @run-at       document-start
 // @grant        GM_xmlhttpRequest
+// @require      https://codeberg.org/32_64/64lib.js/raw/branch/main/64lib.js
 // ==/UserScript==
 
 (async () => {
